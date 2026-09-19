@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  phone     String   @unique
+  name      String?
+  tokens    Token[]
+  createdAt DateTime @default(now())
+}
+
+model Business {
+  id        String   @id @default(uuid())
+  name      String
+  queues    Queue[]
+  createdAt DateTime @default(now())
+}
+
+model Queue {
+  id         String   @id @default(uuid())
+  businessId String
+  name       String   // e.g., "Dr. Smith" or "Haircut"
+  business   Business @relation(fields: [businessId], references: [id])
+  tokens     Token[]
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+}
+
+model Token {
+  id          String   @id @default(uuid())
+  queueId     String
+  userId      String
+  tokenNumber Int
+  status      String   @default("PENDING") // PENDING, ACTIVE, COMPLETED, SKIPPED
+  queue       Queue    @relation(fields: [queueId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+}
