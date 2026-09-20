@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+const socket = io("https://tms-backend-u82f.onrender.com");
 const queueId = "60cc4028-3d4c-4ea1-a877-5be5491224ce";
 
 export default function Dashboard() {
@@ -12,7 +12,7 @@ export default function Dashboard() {
 
   // Fetch initial state and listen for live updates
   useEffect(() => {
-    fetch(`http://localhost:3000/api/queues/${queueId}/state`)
+    fetch(`https://tms-backend-u82f.onrender.com/api/queues/${queueId}/state`)
       .then(res => res.json())
       .then(data => {
         setActiveToken(data.activeToken);
@@ -23,11 +23,13 @@ export default function Dashboard() {
 
     // When a user requests a new token from their phone
     socket.on("token_added", (newToken) => {
+      console.log("📡 SOCKET MESSAGE RECEIVED token_added:", data);
       setPendingTokens((prev) => [...prev, newToken]);
     });
 
     // When the business clicks Next or Skip
     socket.on("queue_updated", (newState) => {
+      console.log("📡 SOCKET MESSAGE RECEIVED queue_updated:", data);
       setActiveToken(newState.activeToken);
       setPendingTokens(newState.pendingTokens);
     });
@@ -40,7 +42,7 @@ export default function Dashboard() {
 
   // Admin Actions
   const callNextPatient = async () => {
-    await fetch('http://localhost:3000/api/queues/next', {
+    await fetch('https://tms-backend-u82f.onrender.com/api/queues/next', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ queueId })
@@ -48,7 +50,7 @@ export default function Dashboard() {
   };
 
   const skipPatient = async (tokenId: string) => {
-    await fetch('http://localhost:3000/api/tokens/skip', {
+    await fetch('https://tms-backend-u82f.onrender.com/api/tokens/skip', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tokenId, queueId })

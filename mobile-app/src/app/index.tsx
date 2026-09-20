@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { io } from 'socket.io-client';
 
-const BACKEND_URL = "http://192.168.1.5:3000";
-const QUEUE_ID = "60cc4028-3d4c-4ea1-a877-5be5491224ce";
+const BACKEND_URL = "https://tms-backend-u82f.onrender.com";
+const QUEUE_ID = "queue-1";
 
 const socket = io(BACKEND_URL);
 
